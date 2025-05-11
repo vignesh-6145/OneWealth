@@ -1,0 +1,6 @@
+@OneWealth.API_HostAddress = http://localhost:5135
+
+GET {{OneWealth.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
