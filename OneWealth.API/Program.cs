@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 builder.Services.AddPresentation();
+builder.Services.AddControllers();
 
 //serilog
 builder.Host.UseSerilog( (context, configuration) => 
@@ -28,7 +29,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapControllers();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.Run();
+// DONE Serilog, 
+//TODO Configure Serilog best practices
+//TODO Setup JWT
+//TODO Setup unit tests
+//TODO Add sonar code analsis
+//TODO configure github actions
+//TODO DB Design
+//TODO EF Core

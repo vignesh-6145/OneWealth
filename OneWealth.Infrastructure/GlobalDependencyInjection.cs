@@ -2,11 +2,11 @@
 
 namespace OneWealth.Infrastructure;
 
-public static class DependencyInjection
+public static class GlobalDependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services){
 
-        var assembly = typeof(DependencyInjection).Assembly;
+        var assembly = typeof(GlobalDependencyInjection).Assembly;
 
         return services;
     }
