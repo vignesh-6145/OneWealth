@@ -1,3 +1,4 @@
+using OneWealth.API.Middleware;
 using OneWealth.Application;
 using OneWealth.Infrastructure;
 using OneWealth.Presentation;
@@ -30,6 +31,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+
+app.UseMiddleware<RequestLogContextMiddleware>();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
