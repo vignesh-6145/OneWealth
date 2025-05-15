@@ -1,6 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+
 using OneWealth.API.Middleware;
 using OneWealth.Application;
 using OneWealth.Infrastructure;
+using OneWealth.Infrastructure.Data;
 using OneWealth.Presentation;
 using Serilog;
 
@@ -10,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//DBCOntext
+builder.Services.AddDbContext<OneWealthContext>( options => options.UseSqlServer(builder.Configuration.GetConnectionString("OneWealth")));
 
 //adding vatious projects dependencies
 builder.Services.AddApplication();
@@ -38,10 +44,10 @@ app.UseHttpsRedirection();
 
 app.Run();
 // DONE Serilog, 
-//TODO Configure Serilog best practices
+// DONE Configure Serilog best practices
 //TODO Setup JWT
 //TODO Setup unit tests
-//TODO Add sonar code analsis
+//DONE Add sonar code analsis
 //TODO configure github actions
-//TODO DB Design
+//DONE DB Design
 //TODO EF Core
