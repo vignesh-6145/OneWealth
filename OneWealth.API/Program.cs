@@ -1,5 +1,11 @@
+using FluentValidation;
+
 using Microsoft.EntityFrameworkCore;
 
+using OneWealth.Business;
+using OneWealth.Business.DTO.Profiles;
+using OneWealth.Business.Validators;
+using OneWealth.Repository;
 using OneWealth.Repository.Data;
 
 using Serilog;
@@ -15,9 +21,6 @@ builder.Services.AddControllers();
 builder.Host.UseSerilog( (context, configuration) => 
     configuration.ReadFrom.Configuration(context.Configuration));
 
-var app = builder.Build();
-
-
 //DBCOntext
 builder.Services.AddDbContext<OneWealthContext>( options =>
     {
@@ -26,6 +29,17 @@ builder.Services.AddDbContext<OneWealthContext>( options =>
 
     }
 );
+
+builder.Services.RegisterBusinessServices();
+builder.Services.RegisterRepositories();
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(UserRegistrationValidator));
+builder.Services.AddAutoMapper(cfg => 
+    cfg.AddProfile<UserProfile>());
+
+var app = builder.Build();
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -47,3 +61,4 @@ app.Run();
 //TODO : Add Serilog template
 //TODO : Add EFCore 
 //TODO : Configure CI Github actions
+//TODO : JWT

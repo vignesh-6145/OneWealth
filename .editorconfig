@@ -364,4 +364,7 @@ dotnet_naming_style.s_camelcase.capitalization = camel_case
 
 # Static code analysis rules customizations
 [*]
-dotnet_diagnostic.S6966severity  = none;
+dotnet_diagnostic.S6966.severity  = none;
+dotnet_diagnostic.CA1848.severity = none;
+dotnet_diagnostic.CA1031.severity = none;
+dotnet_diagnostic.CA1707.severity = none;

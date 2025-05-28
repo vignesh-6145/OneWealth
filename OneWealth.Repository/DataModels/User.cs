@@ -49,7 +49,7 @@ public partial class User
     public string? Gender { get; set; }
 
     [Column("password")]
-    [StringLength(60)]
+    [StringLength(128)]
     [Unicode(false)]
     public string? Password { get; set; }
 }
