@@ -27,6 +27,10 @@ public class UserRepository : CoreRepository, IUserRepository
     public void AddUserFinancialProfile(UserFinancialProfile userFinancialProfile)
     {
         _context.UserFinancialProfiles.Add(userFinancialProfile);
-    }    
+    }
+    public IEnumerable<User> GetUsers()
+    {
+        return _context.Users;
+    }
 
 }

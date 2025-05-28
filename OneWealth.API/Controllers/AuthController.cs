@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using OneWealth.Business.DTO.Users;
+using OneWealth.Business.Exceptions;
 using OneWealth.Business.Interfaces;
 
 namespace OneWealth.API.Controllers
@@ -39,6 +40,22 @@ namespace OneWealth.API.Controllers
             try
             {
                 userId = await _authService.RegisterUser(userInfo).ConfigureAwait(false);
+            }
+            catch (UserNameAlreadyExistsException ex)
+            {
+                Console.WriteLine($"{ex.Message}-----------");
+                _logger.LogError(ex, "{UserName} already exists.", userInfo?.UserName);
+                return BadRequest(ex.Message);
+            }
+            catch (EmailAlreadyInUseException ex)
+            {
+                _logger.LogError(ex, "{Email} already exists.", userInfo?.Email);
+                return BadRequest(ex.Message);
+            }
+            catch (MobileAlreadInUseException ex)
+            {
+                _logger.LogError(ex, "{Mobile} already exists.", userInfo?.Mobile);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {

@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 
 using OneWealth.Business.DTO.Users;
+using OneWealth.Business.Exceptions;
 using OneWealth.Business.Interfaces;
 using OneWealth.Repository.DataModels;
 using OneWealth.Repository.Interfaces;
@@ -36,6 +37,21 @@ public class AuthService : IAuthService
         var transaction = await _userRepository.GetTransactionAsync().ConfigureAwait(false);
         try
         {
+            var users = _userRepository.GetUsers();
+            var isPINotUnique = users.Aggregate((isUserNameNotUnique: false, isEmailNotUnique: false, isPhoneNotUnique: false), (src, seed) =>
+            (
+                isUserNameNotUnique: src.isUserNameNotUnique || seed.UserName == userInfo?.UserName,
+                isEmailNotUnique: src.isEmailNotUnique || seed.Email == userInfo?.Email,
+                isPhoneNotUnique: src.isPhoneNotUnique || seed.Mobile == userInfo?.Mobile
+            ));
+
+            if (isPINotUnique.isUserNameNotUnique)
+                throw new UserNameAlreadyExistsException(userInfo?.UserName ?? "");
+            if (isPINotUnique.isEmailNotUnique)
+                throw new EmailAlreadyInUseException(userInfo?.Email ?? "");
+            if (isPINotUnique.isPhoneNotUnique)
+                throw new MobileAlreadInUseException(userInfo?.Mobile ?? "");
+
             var user = _mapper.Map<User>(userInfo);
             user.Password = _cryptoService.SaltHash(user.Password ?? "");
             _userRepository.AddUser(user);
@@ -58,6 +74,9 @@ public class AuthService : IAuthService
             await transaction.CommitAsync().ConfigureAwait(false);
             return user.Id;
             //TODO: Email & mobile authentication
+        }
+        catch (Exception e)  when (e is UserNameAlreadyExistsException || e is EmailAlreadyInUseException || e is MobileAlreadInUseException){
+            throw ;
         }
         catch (Exception ex)
         {
