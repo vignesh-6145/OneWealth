@@ -13,6 +13,7 @@ public static class GlobalDependencyInjection
     public static IServiceCollection RegisterBusinessServices(this IServiceCollection services)
     {
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICryptoService, CryptoSerice>();
         return services;
     }
 

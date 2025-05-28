@@ -61,10 +61,10 @@ public class UserRegistrationValidator : AbstractValidator<UserRegistrationDto>
         RuleFor(obj => obj.Gender)
             .NotNull()
             .WithErrorCode(UserValidationErrors.InvalidGenderNull)
-            .WithMessage(UserValidationErrors.InvalidGenderNullMessage)
-            .IsInEnum()
-            .WithErrorCode(UserValidationErrors.InvalidGender)
-            .WithMessage(UserValidationErrors.InvalidGenderMessage);
+            .WithMessage(UserValidationErrors.InvalidGenderNullMessage);
+            // .IsInEnum()
+            // .WithErrorCode(UserValidationErrors.InvalidGender)
+            // .WithMessage(UserValidationErrors.InvalidGenderMessage);
 
         RuleFor(obj => obj.DateOfBirth)
             .NotNull()

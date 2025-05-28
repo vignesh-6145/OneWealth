@@ -16,13 +16,16 @@ public class AuthService : IAuthService
     private readonly ILogger<AuthService> _logger;
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
+    private readonly ICryptoService _cryptoService;
 
-    public AuthService(ILogger<AuthService> logger, IUserRepository userRepository, IMapper mapper)
+    public AuthService(ILogger<AuthService> logger, IUserRepository userRepository, IMapper mapper, ICryptoService cryptoService)
     {
         _logger = logger;
         _userRepository = userRepository;
         _mapper = mapper;
+        _cryptoService = cryptoService;
     }
+    
 
     public async Task<Guid> RegisterUser(UserRegistrationDto userInfo)
     {
@@ -34,10 +37,12 @@ public class AuthService : IAuthService
         try
         {
             var user = _mapper.Map<User>(userInfo);
-            var userId = _userRepository.AddUser(user);
+            user.Password = _cryptoService.SaltHash(user.Password ?? "");
+            _userRepository.AddUser(user);
             await _userRepository.SaveChangesAsync().ConfigureAwait(false);
-            _logger.LogInformation("Inserted user returned {UserId} Obj {UserID}", userId, user.Id);
-            userId = user.Id;
+            var userId = user.Id;
+            _logger.LogInformation("Inserted user returned {UserID}", userId);
+
             var userInformation = _mapper.Map<UserInformation>(userInfo);
             userInformation.Id = userId;
             _userRepository.AddUserInformation(userInformation);
@@ -57,10 +62,10 @@ public class AuthService : IAuthService
         catch (Exception ex)
         {
             await transaction.RollbackAsync().ConfigureAwait(false);
-            _logger.LogInformation("Failed while inserting user Rolling back for {UserName}",userInfo.UserName);
+            _logger.LogInformation("Failed while inserting user Rolling back for {UserName}", userInfo?.UserName);
             _logger.LogError(ex, "Something went wrong while registering user {UserName}", userInfo?.UserName);
             return Guid.Empty;
-            
+
         }
     }
 

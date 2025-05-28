@@ -14,7 +14,7 @@ namespace OneWealth.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private ILogger<AuthController> _logger;
+        private readonly ILogger<AuthController> _logger;
         private readonly IAuthService _authService;
         private readonly IValidator<UserRegistrationDto> _userValidator;
 
@@ -35,7 +35,7 @@ namespace OneWealth.API.Controllers
             {
                 return BadRequest(validationResult.ToDictionary());
             }
-            Guid userId = Guid.Empty;
+            Guid userId;
             try
             {
                 userId = await _authService.RegisterUser(userInfo).ConfigureAwait(false);
